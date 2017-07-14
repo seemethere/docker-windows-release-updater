@@ -8,8 +8,8 @@ import json
 
 import requests
 
-DEFAULT_URL = (
-    "https://download.docker.com/components/engine/windows-server/index.json"
+DEFAULT_ROUTE = (
+    "/components/engine/windows-server/index.json"
 )
 
 DEFAULT_NOTES = (
@@ -36,7 +36,7 @@ def generate_sha256(content):
 
 
 def main(args):
-    index_resp = grab_file(DEFAULT_URL)
+    index_resp = grab_file(f"{args.base_url}{DEFAULT_ROUTE}")
     index = json.loads(index_resp.content)
     if index["versions"].get(args.release_name):
         print(f"Release {args.release_name} already exists!")
@@ -49,13 +49,9 @@ def main(args):
         "sha256": generate_sha256(download_resp.content),
         "notes": DEFAULT_NOTES
     }
-    index["channels"][args.release_name] = {
+    index["channels"][args.release_channel] = {
         "version": args.release_name
     }
-    if args.release_channel != args.release_name:
-        index["channels"][args.release_channel] = {
-            "alias": args.release_name
-        }
     # TODO: This will eventually upload this json dump to S3
     print(json.dumps(index, indent=4, sort_keys=True))
 
@@ -63,6 +59,11 @@ def main(args):
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Add a release to download.docker.com for windows")
+    parser.add_argument(
+        "base_url",
+        type=str,
+        help="URL to point to for the index"
+    )
     parser.add_argument(
         "release_name",
         type=str,
