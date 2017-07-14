@@ -49,6 +49,12 @@ def main(args):
         "sha256": generate_sha256(download_resp.content),
         "notes": DEFAULT_NOTES
     }
+    if "rc" not in args.release_name:
+        # Puts releases like 17.06.1 into the 17.06 channel for users who want
+        # to be pinned to a version but want security updates
+        index["channels"][args.release_name[0:5]] = {
+            "version": args.release_name
+        }
     index["channels"][args.release_channel] = {
         "version": args.release_name
     }
