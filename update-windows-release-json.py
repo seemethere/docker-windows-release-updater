@@ -17,7 +17,6 @@ DEFAULT_NOTES = (
     "and Nano Server."
 )
 
-
 def grab_file(url):
     resp = requests.get(url)
     if resp.status_code != 200:
@@ -36,8 +35,14 @@ def generate_sha256(content):
 
 
 def main(args):
-    index_resp = grab_file(f"{args.base_url}{DEFAULT_ROUTE}")
-    index = json.loads(index_resp.content)
+    try:
+        index_resp = grab_file(f"{args.base_url}{DEFAULT_ROUTE}")
+        index = json.loads(index_resp.content)
+    except Exception:
+        index = {
+            "versions": {},
+            "channels": {}
+        }
     if index["versions"].get(args.release_name):
         print(f"Release {args.release_name} already exists!")
         exit(1)
