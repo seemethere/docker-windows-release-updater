@@ -12,10 +12,7 @@ DEFAULT_ROUTE = (
     "/components/engine/windows-server/index.json"
 )
 
-DEFAULT_NOTES = (
-    "Contains the CS Docker Engine for use with Windows Server 2016 "
-    "and Nano Server."
-)
+DEFAULT_NOTES = "Docker for Windows Server 2016"
 
 def grab_file(url):
     resp = requests.get(url)
