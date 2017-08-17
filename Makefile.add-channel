@@ -1,0 +1,25 @@
+ALIAS_FLAG="--alias"
+
+ifndef BASE_URL
+$(error BASE_URL is not set)
+endif
+
+ifndef CHANNEL_NAME
+$(error CHANNEL_NAME is not set)
+endif
+
+ifndef VERSION_NAME
+$(error VERSION_NAME is not set)
+endif
+
+ifndef IS_ALIAS
+$(error IS_ALIAS is not set)
+endif
+
+.PHONY: add_channel
+add_channel:
+	mkdir -p build
+	docker build -t docker-windows-release-add-channel -f Dockerfile.add-channel .
+	docker run \
+		-e BUCKET_NAME \
+		--rm docker-windows-release-add-channel $(BASE_URL) $(CHANNEL_NAME) $(VERSION_NAME) $(IS_ALIAS) | tee build/index.json
