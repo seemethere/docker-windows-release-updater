@@ -26,7 +26,7 @@ def main(args):
             "versions": {},
             "channels": {}
         }
-    key = "alias" if args.is_alias else "version"
+    key = "alias" if args.is_alias == "false" else "version"
     index["channels"][args.channel_name] = {
         key: args.version_name
     }
@@ -53,7 +53,7 @@ def parse_arguments():
     )
     parser.add_argument(
         "is_alias",
-        type=bool,
+        type=str,
         help="Is version an alias to another channel?"
     )
     return parser.parse_args()
